@@ -160,3 +160,7 @@ C:\Users\gaspe\source\repos\ProgressTracker\obj\Debug\net9.0\refint\ProgressTrac
 C:\Users\gaspe\source\repos\ProgressTracker\obj\Debug\net9.0\ProgressTracker.pdb
 C:\Users\gaspe\source\repos\ProgressTracker\obj\Debug\net9.0\ProgressTracker.genruntimeconfig.cache
 C:\Users\gaspe\source\repos\ProgressTracker\obj\Debug\net9.0\ref\ProgressTracker.dll
+C:\Users\gaspe\source\repos\ProgressTracker\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\gaspe\source\repos\ProgressTracker\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\gaspe\source\repos\ProgressTracker\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\gaspe\source\repos\ProgressTracker\bin\Debug\net9.0\Mailjet.Client.dll

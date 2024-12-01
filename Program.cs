@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProgressTracker.Data;
 using ProgressTracker.Models;
+using ProgressTracker.Repositories.RepositorieInterface;
+using ProgressTracker.Repositories.RepositoryImlpementation;
+using ProgressTracker.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContextConnectionString"));
 });
+
+builder.Services.AddScoped<IUserRepository, UserSqlRepository>();
+
+// Registering the EmailService
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => 
 {
@@ -56,10 +64,32 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+// Seed roles during application startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Call the role seeding method
+        await DbInitializer.SeedRolesAsync(services);
+    }
+    catch (Exception ex)
+    {
+        // Handling exceptions
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding roles.");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options => 
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Progress Tracker API");
+    });
+    
 }
 
 app.UseHttpsRedirection();
