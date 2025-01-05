@@ -79,6 +79,14 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
         {
             return await _roleManager.RoleExistsAsync(roleName);
         }
+       public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+        public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
 
         public async Task<IdentityResult> CreateRoleAsync(string roleName)
         {
@@ -92,5 +100,7 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
             }
             
         }
+
+        
     }
 }

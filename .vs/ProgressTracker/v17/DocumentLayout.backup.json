@@ -7,32 +7,36 @@
       "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\dto\\confirmemaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:dto\\confirmemaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\dto\\resetpassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:dto\\resetpassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\repositories\\repositoryimlpementation\\usersqlrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:repositories\\repositoryimlpementation\\usersqlrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\repositories\\repositoryinterface\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:repositories\\repositoryinterface\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\dto\\confirmemaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:dto\\confirmemaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\repositories\\repositoryinterface\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:repositories\\repositoryinterface\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\dto\\emailsenddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:dto\\emailsenddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|c:\\users\\gaspe\\source\\repos\\progresstracker\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3F928D83-64B7-4B29-A2E5-BF8EADA8F5F8}|ProgressTracker.csproj|solutionrelative:services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,8 +46,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ResetPasswordDto.cs",
+              "DocumentMoniker": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\DTO\\ResetPasswordDto.cs",
+              "RelativeDocumentMoniker": "DTO\\ResetPasswordDto.cs",
+              "ToolTip": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\DTO\\ResetPasswordDto.cs",
+              "RelativeToolTip": "DTO\\ResetPasswordDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-04T11:10:58.409Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -52,14 +69,14 @@
               "RelativeDocumentMoniker": "Repositories\\RepositoryImlpementation\\UserSqlRepository.cs",
               "ToolTip": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Repositories\\RepositoryImlpementation\\UserSqlRepository.cs",
               "RelativeToolTip": "Repositories\\RepositoryImlpementation\\UserSqlRepository.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAzwFwAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAswFgAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-01T13:10:23.193Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "ConfirmEmailDto.cs",
               "DocumentMoniker": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\DTO\\ConfirmEmailDto.cs",
               "RelativeDocumentMoniker": "DTO\\ConfirmEmailDto.cs",
@@ -78,27 +95,27 @@
               "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
               "ToolTip": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Controllers\\AuthController.cs",
               "RelativeToolTip": "Controllers\\AuthController.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAcwGoAAABRAAAAAAAAAA==",
+              "ViewState": "AgIAAIIAAAAAAAAAAAAYwJsAAABYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-30T16:03:19.468Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAAAGUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAHIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-30T16:01:47.843Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "EmailSendDto.cs",
               "DocumentMoniker": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\DTO\\EmailSendDto.cs",
               "RelativeDocumentMoniker": "DTO\\EmailSendDto.cs",
@@ -111,7 +128,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "EmailService.cs",
               "DocumentMoniker": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Services\\EmailService.cs",
               "RelativeDocumentMoniker": "Services\\EmailService.cs",
@@ -119,8 +136,7 @@
               "RelativeToolTip": "Services\\EmailService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-30T15:33:34.498Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-30T15:33:34.498Z"
             },
             {
               "$type": "Document",
@@ -130,20 +146,20 @@
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-11-30T12:49:23.568Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "IUserRepository.cs",
               "DocumentMoniker": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Repositories\\RepositoryInterface\\IUserRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\RepositoryInterface\\IUserRepository.cs",
               "ToolTip": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\Repositories\\RepositoryInterface\\IUserRepository.cs",
               "RelativeToolTip": "Repositories\\RepositoryInterface\\IUserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-24T17:44:02.083Z",
               "EditorCaption": ""

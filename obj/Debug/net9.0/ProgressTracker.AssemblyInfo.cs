@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProgressTracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dcd5919df00046d58f2790ebff6f19ba940f98e9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e82edf8e277a318fefc7ad3dc598bf386183b0d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProgressTracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProgressTracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

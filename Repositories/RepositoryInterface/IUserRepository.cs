@@ -19,5 +19,7 @@ namespace ProgressTracker.Repositories.RepositorieInterface
         Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);
         Task<bool> RoleExistsAsync(string roleName);
         Task<IdentityResult> CreateRoleAsync(string roleName);
+        Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword);
+        Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
     }
 }

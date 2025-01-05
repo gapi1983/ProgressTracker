@@ -11,6 +11,14 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
+    });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -62,6 +70,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+
 var app = builder.Build();
 
 // Seed roles during application startup
@@ -82,6 +92,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -93,8 +104,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); // must be before UseAuthorization otherwise it won't work
+app.UseAuthentication(); 
 app.UseAuthorization();
+
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -121,6 +122,49 @@ namespace ProgressTracker.Controllers
             }
         }
 
+        [HttpPost("forgot-password/{email}")]
+        public async Task<IActionResult> ForgotPassword(string email) 
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null) 
+            {
+                return Unauthorized(new { message = "This email has not been registered yet." });
+            };
+
+            var emailSent = await SendForgetPasswordEmailAsync(user);
+            if (!emailSent)
+            {
+                return BadRequest(new { message = "Failed to send password reset email. Please try again." });
+            }
+
+            return Ok(new { message = "Password reset email sent successfully, check your email." });
+
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userRepository.GetUserByEmailAsync(resetPasswordDto.Email);
+            if (user == null)
+            {
+                return Unauthorized(new { message = "This email has not been registered yet." });
+            }
+
+            var decodedTokenBytes = WebEncoders.Base64UrlDecode(resetPasswordDto.Token);
+            var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
+
+            var result = await _userRepository.ResetPasswordAsync(user, decodedToken, resetPasswordDto.NewPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { message = "Error resetting password.", errors = result.Errors });
+            }
+
+            return Ok(new { message = "Password has been reset successfully." });
+        }
+
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -168,6 +212,26 @@ namespace ProgressTracker.Controllers
                 $"<br>{_configuration["Email:ApplicationName"]}";
 
             var emailSend = new EmailSendDto(applicationUser.Email, "Confirm your Email", body);
+
+            return await _emailService.SendEmailAsync(emailSend);
+        }
+
+        public async Task<bool> SendForgetPasswordEmailAsync(ApplicationUser applicationUser)
+        {
+            var token = await _userRepository.GeneratePasswordResetTokenAsync(applicationUser);
+
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var resetUrl = $"{_configuration["Jwt:ClientUrl"]}/{_configuration["Email:ResetPasswordEmailPath"]}?token={encodedToken}&email={applicationUser.Email}";
+
+            var body = $@"
+                <p>Hi {applicationUser.FirstName} {applicationUser.LastName},</p>
+                <p>You requested a password reset. Please click the link below to reset your password:</p>
+                <a href='{resetUrl}'>Reset Password</a>
+                <br />
+                <p>{_configuration["Email:ApplicationName"]}</p>";
+
+            var emailSend = new EmailSendDto(applicationUser.Email, "Reset your password", body);
 
             return await _emailService.SendEmailAsync(emailSend);
         }

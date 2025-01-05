@@ -1,6 +1,32 @@
 [
   {
     "ContainingType": "ProgressTracker.Controllers.AuthController",
+    "Method": "SendForgetPasswordEmailAsync",
+    "RelativePath": "api/Auth",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "applicationUser",
+        "Type": "ProgressTracker.Models.ApplicationUser",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.AuthController",
     "Method": "ConfirmEmail",
     "RelativePath": "api/Auth/confirm-email",
     "HttpMethod": "GET",
@@ -10,6 +36,22 @@
       {
         "Name": "model",
         "Type": "ProgressTracker.DTO.ConfirmEmailDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.AuthController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Auth/forgot-password/{email}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
         "IsRequired": true
       }
     ],
@@ -42,6 +84,22 @@
       {
         "Name": "model",
         "Type": "ProgressTracker.DTO.RegisterDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.AuthController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/Auth/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "resetPasswordDto",
+        "Type": "ProgressTracker.DTO.ResetPasswordDto",
         "IsRequired": true
       }
     ],
