@@ -14,6 +14,7 @@ namespace ProgressTracker.Repositories.RepositorieInterface
         Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
         Task<IList<string>> GetUserRolesAsync(ApplicationUser user);
         Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role);
+        Task<IdentityResult> RemoveFromRoleAsync(ApplicationUser user, string role);
         Task<bool> IsEmailConfirmedAsync(ApplicationUser user);
         Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
         Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);

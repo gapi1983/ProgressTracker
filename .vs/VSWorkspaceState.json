@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Controllers",
+    "\\Data",
+    "\\DTO",
+    "\\Models",
+    "\\Repositories",
+    "\\Repositories\\RepositoryImlpementation",
+    "\\Repositories\\RepositoryInterface"
+  ],
+  "SelectedNode": "\\ProgressTracker.sln",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "J4XViuwaR0w=",
+  "dgSpecHash": "v/RAP1+/EZo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\ProgressTracker.csproj",
+  "projectFilePath": "C:\\Users\\gaspe\\source\\repos\\ProgressTracker\\ProgressTracker-backend\\ProgressTracker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gaspe\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\gaspe\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
@@ -168,26 +168,5 @@
     "C:\\Users\\gaspe\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\gaspe\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'System.Net.Http' 4.3.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-7jgj-8wvc-jh57",
-      "libraryId": "System.Net.Http",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'System.Text.RegularExpressions' 4.3.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-cmhx-cq75-c4mj",
-      "libraryId": "System.Text.RegularExpressions",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

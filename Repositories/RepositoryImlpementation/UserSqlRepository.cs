@@ -59,6 +59,10 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
         {
             return await _userManager.AddToRoleAsync(user, role);
         }
+        public async Task<IdentityResult> RemoveFromRoleAsync(ApplicationUser user, string role)
+        {
+            return await _userManager.RemoveFromRoleAsync(user, role);
+        }
 
         public async Task<bool> IsEmailConfirmedAsync(ApplicationUser user)
         {
