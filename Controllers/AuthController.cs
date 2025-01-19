@@ -95,7 +95,7 @@ namespace ProgressTracker.Controllers
             return Ok(new { token });
         }
         [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail(ConfirmEmailDto model) 
+        public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto model) 
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
