@@ -80,6 +80,16 @@
   },
   {
     "ContainingType": "ProgressTracker.Controllers.AuthController",
+    "Method": "Logout",
+    "RelativePath": "api/Auth/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.AuthController",
     "Method": "Register",
     "RelativePath": "api/Auth/register",
     "HttpMethod": "POST",
@@ -111,6 +121,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "ProgressTracker.Controllers.AuthController",
+    "Method": "Verify",
+    "RelativePath": "api/Auth/verify",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ProgressTracker.Controllers.UserController",
     "Method": "AddRoleToUser",
     "RelativePath": "api/User/add-user-role/{id}/{roleName}",
@@ -129,6 +149,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.UserController",
+    "Method": "GetAllRoles",
+    "RelativePath": "api/User/all-roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -192,8 +222,40 @@
         "IsRequired": true
       },
       {
-        "Name": "userDto",
-        "Type": "ProgressTracker.DTO.User.UserDto",
+        "Name": "updateUserDto",
+        "Type": "ProgressTracker.DTO.User.UpdateUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.UserController",
+    "Method": "GetUserByEmail",
+    "RelativePath": "api/User/user-by-email/{email}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ProgressTracker.Controllers.UserController",
+    "Method": "GetUsersByRole",
+    "RelativePath": "api/User/users-by-role/{roleId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Guid",
         "IsRequired": true
       }
     ],

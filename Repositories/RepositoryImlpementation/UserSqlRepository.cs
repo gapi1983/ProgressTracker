@@ -54,6 +54,10 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
         {
             return await _userManager.GetRolesAsync(user);
         }
+        public async Task<IList<IdentityRole<Guid>>> GetAllRolesAsync()
+        {
+            return await _roleManager.Roles.ToListAsync();
+        }
 
         public async Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role)
         {
@@ -77,6 +81,16 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
         public async Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token)
         {
             return await _userManager.ConfirmEmailAsync(user, token);
+        }
+        public async Task<IList<ApplicationUser>> GetUsersByRoleAsync(Guid roleId)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId.ToString());
+            if (role == null)
+            {
+                return new List<ApplicationUser>();
+            }
+            var users = await _userManager.GetUsersInRoleAsync(role.Name);
+            return users;
         }
 
         public async Task<bool> RoleExistsAsync(string roleName)

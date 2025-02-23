@@ -1,4 +1,5 @@
 ﻿using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -92,8 +93,40 @@ namespace ProgressTracker.Controllers
             // Generate JWT token
             var token = await GenerateJwtTokenAsync(user);
 
-            return Ok(new { token });
+            // Instead of returning token in JSON i will return it in a cookie (HttpOnly)
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddHours(1),
+                SameSite = SameSiteMode.None,
+            };
+            Response.Cookies.Append("jwt", token, cookieOptions);
+
+            return Ok(new { message="Login successful", token=token }); // remove token after testing
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout() 
+        {
+            Response.Cookies.Delete("jwt", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/"
+            });
+
+            return Ok(new { message = "Logout successful." });
+        }
+
+        [Authorize]
+        [HttpGet("verify")]
+        public async Task<IActionResult> Verify()
+        {
+            return Ok(new { isLoggedIn = true });
+        }
+
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto model) 
         {

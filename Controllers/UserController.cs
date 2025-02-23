@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProgressTracker.DTO.Role;
 using ProgressTracker.DTO.User;
 using ProgressTracker.Repositories.RepositorieInterface;
 
@@ -58,16 +59,16 @@ namespace ProgressTracker.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("update-user/{id:guid}")]
-        public async Task<IActionResult> UpdateUserById(Guid id, [FromBody] UserDto userDto)
+        public async Task<IActionResult> UpdateUserById(Guid id, [FromBody] UpdateUserDto updateUserDto)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
             if(user == null)
             {
                 return NotFound();
             }
-            user.Email = userDto.Email;
-            user.FirstName = userDto.FirstName;
-            user.LastName = userDto.LastName;
+            user.Email = updateUserDto.Email;
+            user.FirstName = updateUserDto.FirstName;
+            user.LastName = updateUserDto.LastName;
 
             var result = await _userRepository.UpdateUserAsync(user);
             if (!result.Succeeded)
@@ -120,6 +121,70 @@ namespace ProgressTracker.Controllers
                 return BadRequest(new { message = "Error removing role from user.", errors = result.Errors });
             }
             return Ok(new { message = $"Role {roleName} removed from user {user.Email}." });
+        }
+        [Authorize(Roles ="Admin")]
+        [HttpGet("all-roles")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var roles = await _userRepository.GetAllRolesAsync();
+            var roleDtos = new List<RoleDto>();
+            foreach (var role in roles)
+            {
+                var roleDto = new RoleDto
+                {
+                    Id = role.Id,
+                    RoleName = role.Name
+                };
+                roleDtos.Add(roleDto);
+            }
+            return Ok(roleDtos);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("users-by-role/{roleId}")]
+        public async Task<IActionResult> GetUsersByRole(Guid roleId)
+        {
+            var users = await _userRepository.GetUsersByRoleAsync(roleId);
+            if(users == null)
+            {
+                return NotFound();
+            }
+            var userDtos = new List<UserDto>();
+            foreach (var user in users)
+            {
+                var roles = await _userRepository.GetUserRolesAsync(user);
+                var userDto = new UserDto
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Role = roles,
+                    Email = user.Email
+                };
+                userDtos.Add(userDto);
+            }
+            return Ok(userDtos);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("user-by-email/{email}")]
+        public async Task<IActionResult> GetUserByEmail(string email)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound(new { message = $"User with email '{email}' not found." });
+            }
+
+            var roles = await _userRepository.GetUserRolesAsync(user);
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = roles
+            };
+
+            return Ok(userDto);
         }
     }
 }
