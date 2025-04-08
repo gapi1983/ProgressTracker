@@ -19,7 +19,7 @@ namespace ProgressTracker.Controllers
             _userRepository = userRepository;
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Admin,Manager")]
         [HttpGet("all-users")]
         public async Task<IActionResult> GetAllUsers()
         {

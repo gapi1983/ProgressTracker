@@ -1,0 +1,17 @@
+# Ignore build outputs
+bin/
+obj/
+
+# Visual Studio folder
+.vs/
+
+# User-specific files
+*.user
+*.suo
+
+# Other common stuff
+*.log
+*.vsidx
+*.db
+*.DS_Store
+.env

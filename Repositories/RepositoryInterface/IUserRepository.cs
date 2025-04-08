@@ -24,5 +24,15 @@ namespace ProgressTracker.Repositories.RepositorieInterface
         Task<IdentityResult> CreateRoleAsync(string roleName);
         Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword);
         Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
+
+        // Tasks
+        Task<TaskItem> CreateTaskAsync(TaskItem task);
+        Task<List<TaskItem>> GetAllTasksAsync();
+        Task<TaskItem>GetTaskByIdAsync(Guid taskId);
+        Task<TaskItem> UpdateTaskAsync(Guid id, TaskItem task);
+
+        // Comments
+        Task<IEnumerable<Comment>> GetCommentByTaskIdAsync(Guid taskId);
+        Task<Comment> CreateCommentAsync(Comment comment);
     }
 }

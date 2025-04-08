@@ -197,6 +197,22 @@ namespace ProgressTracker.Controllers
 
             return Ok(new { message = "Password has been reset successfully." });
         }
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Fetch the user from your repository:
+            var user = await _userRepository.GetUserByIdAsync(Guid.Parse(userId));
+            var roles = await _userRepository.GetUserRolesAsync(user);
+            return Ok(new
+            {
+                id = user.Id,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                roles = roles
+            });
+        }
 
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
@@ -230,6 +246,8 @@ namespace ProgressTracker.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+       
 
         #region  Helper Methods
 

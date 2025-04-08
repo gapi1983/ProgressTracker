@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProgressTracker.Data;
 using ProgressTracker.Models;
 using ProgressTracker.Repositories.RepositorieInterface;
 
@@ -9,11 +11,15 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly ApplicationDbContext dbContext;
 
-        public UserSqlRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+
+
+        public UserSqlRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager, ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            this.dbContext = dbContext;
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
@@ -117,6 +123,66 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
                 return IdentityResult.Failed(new IdentityError { Description = $"Role '{roleName}' already exists." });
             }
             
+        }
+
+        // tasks
+        public async Task<TaskItem> CreateTaskAsync(TaskItem task)
+        {
+            await dbContext.Tasks.AddAsync(task);
+            await dbContext.SaveChangesAsync();
+            return task;
+        }
+
+        public async Task<List<TaskItem>>GetAllTasksAsync()
+        {
+            var tasks =  await dbContext.Tasks.ToListAsync();
+            return tasks;
+        }
+        public async Task<TaskItem> GetTaskByIdAsync(Guid taskId)
+        {
+            return await dbContext.Tasks.FindAsync(taskId);
+        }
+        public async Task<TaskItem> UpdateTaskAsync(Guid taskId, TaskItem updatedTask)
+        {
+            
+            var existingTask = await dbContext.Tasks.FindAsync(taskId);
+            if (existingTask == null)
+            {
+                
+                return null;
+            }
+
+            
+            existingTask.Title = updatedTask.Title;
+            existingTask.Description = updatedTask.Description;
+            existingTask.DueDate = updatedTask.DueDate;
+            existingTask.Status = updatedTask.Status;
+            existingTask.ProgressPercentage = updatedTask.ProgressPercentage;
+            existingTask.AssignedToUserId = updatedTask.AssignedToUserId;
+          
+
+      
+            await dbContext.SaveChangesAsync();
+
+
+            return existingTask;
+        }
+        // comments
+
+        public async Task<IEnumerable<Comment>> GetCommentByTaskIdAsync(Guid taskId)
+        {
+            return await dbContext.Comments
+                .Where(c => c.TaskId == taskId)
+                .Include(c => c.User) 
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<Comment> CreateCommentAsync(Comment comment)
+        {
+            await dbContext.Comments.AddAsync(comment);
+            await dbContext.SaveChangesAsync();
+            return comment;
         }
 
         

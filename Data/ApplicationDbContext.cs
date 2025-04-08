@@ -10,7 +10,7 @@ namespace ProgressTracker.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-        // DbSets for your entities
+        // DbSets for entities
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
 

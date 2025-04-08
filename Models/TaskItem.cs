@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ProgressTracker.Models
 {
@@ -32,6 +33,7 @@ namespace ProgressTracker.Models
         [Required]
         [ForeignKey(nameof(AssignedToUser))]
         public Guid AssignedToUserId { get; set; }
+        [JsonIgnore]
         public virtual ApplicationUser AssignedToUser { get; set; }
 
         // Created by (Manager)
