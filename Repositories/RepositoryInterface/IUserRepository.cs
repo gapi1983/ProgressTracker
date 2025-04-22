@@ -30,9 +30,12 @@ namespace ProgressTracker.Repositories.RepositorieInterface
         Task<List<TaskItem>> GetAllTasksAsync();
         Task<TaskItem>GetTaskByIdAsync(Guid taskId);
         Task<TaskItem> UpdateTaskAsync(Guid id, TaskItem task);
+        Task<List<TaskItem>>GetTaskByUserIdAsync(Guid userId);
+        Task<TaskItem> DeleteTaskAsync(Guid taskId);
 
         // Comments
         Task<IEnumerable<Comment>> GetCommentByTaskIdAsync(Guid taskId);
-        Task<Comment> CreateCommentAsync(Comment comment);
+        Task<Comment> CreateCommentAsync(Comment comment); 
+        Task<Comment> DeleteCommentAsync(Guid commentId);
     }
 }

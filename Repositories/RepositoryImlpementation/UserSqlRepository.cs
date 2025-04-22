@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProgressTracker.Data;
 using ProgressTracker.Models;
 using ProgressTracker.Repositories.RepositorieInterface;
+using System.Threading.Tasks;
 
 namespace ProgressTracker.Repositories.RepositoryImlpementation
 {
@@ -183,6 +184,41 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
             await dbContext.Comments.AddAsync(comment);
             await dbContext.SaveChangesAsync();
             return comment;
+        }
+
+        public async Task<Comment> DeleteCommentAsync(Guid commentId)
+        {
+            var commentToDelete = await dbContext.Comments.FirstOrDefaultAsync(c => c.CommentId == commentId);
+            if (commentToDelete == null) 
+            {
+                return null;
+            }
+            dbContext.Comments.Remove(commentToDelete);
+            await dbContext.SaveChangesAsync();
+            return commentToDelete;
+        }
+
+
+
+        public async Task<List<TaskItem>> GetTaskByUserIdAsync(Guid userId)
+        {
+            return await dbContext.Tasks.Where(t => t.AssignedToUserId == userId).ToListAsync();
+        }
+
+        public async Task<TaskItem> DeleteTaskAsync(Guid taskId)
+        {
+            var taskToDelete = await dbContext.Tasks.FirstOrDefaultAsync(t => t.TaskId == taskId);
+
+            if (taskToDelete != null)
+            {
+                dbContext.Tasks.Remove(taskToDelete);
+                await dbContext.SaveChangesAsync();
+                return taskToDelete;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         

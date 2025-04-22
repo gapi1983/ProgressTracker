@@ -8,7 +8,6 @@ using System.Security.Claims;
 
 namespace ProgressTracker.Controllers
 {
-    [Authorize(Roles = "Admin,Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class TaskController : ControllerBase
@@ -19,7 +18,7 @@ namespace ProgressTracker.Controllers
             _userRepository = userRepository;
         }
 
-        
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost("create-task")]
         public async Task<IActionResult> CreateTask([FromBody] TaskDto taskDto)
         {
@@ -64,14 +63,14 @@ namespace ProgressTracker.Controllers
                 return StatusCode(500, new { error = ex.Message, stackTrace = ex.StackTrace });
             }
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet("get-all-tasks")]
         public async Task<IActionResult> GetAllTasks()
         {
             var tasks = await _userRepository.GetAllTasksAsync();
             return Ok(tasks);
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet("{taskId:guid}")]
         public async Task<IActionResult> GetTaskById(Guid taskId) 
         {
@@ -83,7 +82,7 @@ namespace ProgressTracker.Controllers
             return Ok(task);
 
         }
-
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPut("{taskId:guid}")]
         public async Task<IActionResult>UpdateTask(Guid taskId, [FromBody] TaskDto taskDto)
         {
@@ -105,6 +104,33 @@ namespace ProgressTracker.Controllers
 
             
             return Ok(updatedTask);
+        }
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpDelete("{taskId:guid}")]
+        public async Task<IActionResult> DeleteTask(Guid taskId) 
+        {
+            var task = await _userRepository.GetTaskByIdAsync(taskId);
+            if (task == null)
+            {
+                return NotFound(new { message = "Task not found." });
+            }
+            await _userRepository.DeleteTaskAsync(taskId);
+            return Ok(new { message = "Task deleted successfully." });
+        }
+
+        // adding endpoint for employees tasks (to see only their tasks)
+        [Authorize(Roles = "Employee")]
+        [HttpGet("my-tasks")]
+        public async Task<IActionResult> GetMyTasks() 
+        {
+        
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !Guid.TryParse(userIdString, out Guid userId))
+            {
+                return BadRequest("User ID is not found");
+            }
+            var tasks = await _userRepository.GetTaskByUserIdAsync(userId);
+            return Ok(tasks);
         }
 
 
