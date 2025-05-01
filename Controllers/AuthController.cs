@@ -12,6 +12,7 @@ using ProgressTracker.Repositories.RepositorieInterface;
 using ProgressTracker.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ProgressTracker.Controllers
@@ -76,6 +77,7 @@ namespace ProgressTracker.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
+           //1) basic checks
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -90,35 +92,84 @@ namespace ProgressTracker.Controllers
             if (!await _userRepository.IsEmailConfirmedAsync(user))
                 return Unauthorized(new { message = "Email not confirmed." });
 
-            // Generate JWT token
-            var token = await GenerateJwtTokenAsync(user);
+            // create the 1-hour access JWT
+            var accessToken = await GenerateJwtTokenAsync(user);
 
-            // Instead of returning token in JSON i will return it in a cookie (HttpOnly)
-            var cookieOptions = new CookieOptions
+            // refresh token
+            var refreshToken = new RefreshToken
             {
-                HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.UtcNow.AddHours(1),
-                SameSite = SameSiteMode.None,
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                Token = GenerateSecureToken(),
+                Expires = DateTime.UtcNow.AddDays(7)
             };
-            Response.Cookies.Append("jwt", token, cookieOptions);
+            await _userRepository.AddRefreshTokenAsync(refreshToken);
+            // 3) send cookies
+            Response.Cookies.Append("jwt", accessToken, AccessCookieOpts());
+            Response.Cookies.Append("refresh",refreshToken.Token,RefreshCookieOpts(refreshToken.Expires));
 
-            return Ok(new { message="Login successful", token=token }); // remove token after testing
+            return Ok(new { message = "Login successful" /*, token = accessToken */ });
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout() 
+        public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete("jwt", new CookieOptions
+            // 1️⃣  revoke the refresh token 
+            if (Request.Cookies.TryGetValue("refresh", out var rt))
+                await _userRepository.RevokeRefreshTokenAsync(rt);
+
+            
+            var deleteOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Path = "/"
-            });
+            };
+
+            //delete both cookies
+            Response.Cookies.Delete("jwt", deleteOptions);
+            Response.Cookies.Delete("refresh", deleteOptions);
 
             return Ok(new { message = "Logout successful." });
         }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh() 
+        {
+            // read refresh cookie
+            if (!Request.Cookies.TryGetValue("refresh", out var refreshCookie))
+                return Unauthorized();
+
+            var storedRefreshToken = await _userRepository.GetRefreshTokenAsync(refreshCookie);
+            if (storedRefreshToken == null || !storedRefreshToken.IsActive) return Unauthorized();
+
+            // chek if user found is valid 
+            var user = await _userRepository.GetUserByIdAsync(storedRefreshToken.UserId);
+            if (user == null) return Unauthorized();
+
+            // revoking old token ąnd creating new one (rotation - means old token is revoked and new issued)
+            storedRefreshToken.Revoked = DateTime.UtcNow;
+            await _userRepository.RevokeRefreshTokenAsync(refreshCookie);
+
+            var newRt = new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                Token = GenerateSecureToken(),
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            await _userRepository.AddRefreshTokenAsync(newRt);
+
+            // new access token
+            var newAccess = await GenerateJwtTokenAsync(user);
+
+            Response.Cookies.Append("jwt", newAccess, AccessCookieOpts());
+            Response.Cookies.Append("refresh", newRt.Token, RefreshCookieOpts(newRt.Expires));
+
+            return Ok(new { message = "Token refreshed" });
+        }
+
 
         [Authorize]
         [HttpGet("verify")]
@@ -202,7 +253,7 @@ namespace ProgressTracker.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // Fetch the user from your repository:
+            // Fetch the user from repository:
             var user = await _userRepository.GetUserByIdAsync(Guid.Parse(userId));
             var roles = await _userRepository.GetUserRolesAsync(user);
             return Ok(new
@@ -288,7 +339,25 @@ namespace ProgressTracker.Controllers
         }
 
         #endregion
-
+        private string GenerateSecureToken() 
+        {
+            var bytes = RandomNumberGenerator.GetBytes(64);
+            return Convert.ToBase64String(bytes);
+        }
+        private CookieOptions RefreshCookieOpts(DateTime until) => new()
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = until
+        };
+        private CookieOptions AccessCookieOpts() => new()
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.UtcNow.AddHours(1)
+        };
     }
 
 }

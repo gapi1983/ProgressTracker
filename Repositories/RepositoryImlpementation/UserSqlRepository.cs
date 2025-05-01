@@ -220,7 +220,27 @@ namespace ProgressTracker.Repositories.RepositoryImlpementation
                 return null;
             }
         }
+        // refresh tokens
+        public async Task<RefreshToken> AddRefreshTokenAsync(RefreshToken refreshToken)
+        {
+            await dbContext.RefreshTokens.AddAsync(refreshToken);
+            await dbContext.SaveChangesAsync();
+            return refreshToken;
+        }
 
-        
+        public async Task<RefreshToken> GetRefreshTokenAsync(string token)
+        {
+            return await dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
+        }
+
+        public async Task RevokeRefreshTokenAsync(string token)
+        {
+            var refreshToken = await GetRefreshTokenAsync(token);
+            if (refreshToken != null) 
+            {
+                refreshToken.Revoked = DateTime.UtcNow;
+                await dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

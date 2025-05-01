@@ -25,6 +25,11 @@ namespace ProgressTracker.Repositories.RepositorieInterface
         Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword);
         Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
 
+        //Refresh tokens
+        Task<RefreshToken> AddRefreshTokenAsync(RefreshToken refreshToken);
+        Task<RefreshToken>GetRefreshTokenAsync(string token);
+        Task RevokeRefreshTokenAsync(string token);
+        
         // Tasks
         Task<TaskItem> CreateTaskAsync(TaskItem task);
         Task<List<TaskItem>> GetAllTasksAsync();

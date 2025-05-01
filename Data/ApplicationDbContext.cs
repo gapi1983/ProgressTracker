@@ -13,6 +13,7 @@ namespace ProgressTracker.Data
         // DbSets for entities
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
