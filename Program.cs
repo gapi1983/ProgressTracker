@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +35,7 @@ builder.Services.AddScoped<IUserRepository, UserSqlRepository>();
 // Registering the EmailService
 builder.Services.AddScoped<EmailService>();
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
     // Password settings
     options.Password.RequireDigit = true;
@@ -111,17 +111,17 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options => 
+    app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "Progress Tracker API");
     });
-    
+
 }
 
 app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 

@@ -47,7 +47,7 @@ namespace ProgressTracker.Controllers
                     TaskId = Guid.NewGuid(),
                     Title = taskDto.Title,
                     Description = taskDto.Description,
-                    DueDate = taskDto.DueDate, // hopefully ISO in Angular
+                    DueDate = taskDto.DueDate, 
                     AssignedToUserId = taskDto.AssignedToUserId,
                     CreatedByUserId = createdByUserId,
                     Status = taskDto.Status,
@@ -55,7 +55,7 @@ namespace ProgressTracker.Controllers
                 };
 
                 var createdTask = await _userRepository.CreateTaskAsync(newTask);
-                return Ok(createdTask);
+                return Ok();
             }
             catch (Exception ex)
             {

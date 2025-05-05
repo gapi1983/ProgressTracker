@@ -1,4 +1,5 @@
 ﻿using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ProgressTracker.DTO;
+using ProgressTracker.DTO._2FA;
 using ProgressTracker.Models;
 using ProgressTracker.Repositories.RepositorieInterface;
 using ProgressTracker.Services;
@@ -14,6 +16,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
+
 
 namespace ProgressTracker.Controllers
 {
@@ -25,11 +30,18 @@ namespace ProgressTracker.Controllers
         private readonly IConfiguration _configuration; // used to access appsettings.json for jwt data
         private readonly EmailService _emailService;
         private readonly IUserRepository _userRepository;
-        public AuthController(IUserRepository userRepository, IConfiguration configuration, EmailService emailService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UrlEncoder _urlEncoder;
+
+        public AuthController(IUserRepository userRepository, IConfiguration configuration, EmailService emailService, UserManager<ApplicationUser>userManager, SignInManager<ApplicationUser> signInManager, UrlEncoder urlEncoder)
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _emailService = emailService;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _urlEncoder = urlEncoder;
         }
 
         [HttpPost("register")]
@@ -77,25 +89,41 @@ namespace ProgressTracker.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
-           //1) basic checks
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
-            if (user == null)
+            if (user == null || !await _userRepository.CheckPasswordAsync(user, model.Password))
                 return Unauthorized(new { message = "Invalid credentials." });
 
-            if (!await _userRepository.CheckPasswordAsync(user, model.Password))
-                return Unauthorized(new { message = "Invalid credentials." });
-
-            // Check if email is confirmed
             if (!await _userRepository.IsEmailConfirmedAsync(user))
                 return Unauthorized(new { message = "Email not confirmed." });
 
-            // create the 1-hour access JWT
-            var accessToken = await GenerateJwtTokenAsync(user);
+            // --- ENFORCE 2FA SETUP ---
+            if (!user.TwoFactorSetupComplete)
+            {
+                // 1) issue a temp JWT so they can call the [Authorize] setup endpoint
+                var tempToken = await GenerateJwtTokenAsync(user);
+                Response.Cookies.Append("jwt", tempToken, AccessCookieOpts());
 
-            // refresh token
+                // 2) tell the client to provision 2FA
+                return Ok(new
+                {
+                    mustSetup2FA = true,
+                    userId = user.Id
+                });
+            }
+            if (user.TwoFactorEnabled)
+            {
+                return Ok(new
+                {
+                    requires2FA = true,
+                    userId = user.Id
+                });
+            }
+
+            // --- ISSUE TOKENS FOR FULLY-AUTHENTICATED USER ---
+            var accessToken = await GenerateJwtTokenAsync(user);
             var refreshToken = new RefreshToken
             {
                 Id = Guid.NewGuid(),
@@ -104,12 +132,13 @@ namespace ProgressTracker.Controllers
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             await _userRepository.AddRefreshTokenAsync(refreshToken);
-            // 3) send cookies
-            Response.Cookies.Append("jwt", accessToken, AccessCookieOpts());
-            Response.Cookies.Append("refresh",refreshToken.Token,RefreshCookieOpts(refreshToken.Expires));
 
-            return Ok(new { message = "Login successful" /*, token = accessToken */ });
+            Response.Cookies.Append("jwt", accessToken, AccessCookieOpts());
+            Response.Cookies.Append("refresh", refreshToken.Token, RefreshCookieOpts(refreshToken.Expires));
+
+            return Ok(new { message = "Login successful" });
         }
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -298,7 +327,88 @@ namespace ProgressTracker.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-       
+        // 2FA
+        [Authorize]
+        [HttpGet("2fa/setup")]
+        public async Task<IActionResult> Get2FaSetup()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user.TwoFactorSetupComplete)
+                return BadRequest("2FA already configured.");
+
+            // Ensure the user has a key
+            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user)
+                                  ?? await ResetAndGetAuthenticatorKeyAsync(user);
+
+            // Build the otpauth:// URI for the QR-code generator
+            var qrCodeUri = GenerateQrCodeUri(user.Email, unformattedKey);
+
+            return Ok(new Setup2FaResponseDto
+            {
+                SharedKey = FormatKey(unformattedKey),
+                AuthenticatorUri = qrCodeUri
+            });
+        }
+        [Authorize]
+        [HttpPost("2fa/enable")]
+        public async Task<IActionResult> Enable2Fa([FromBody] CodeDto codeDto) 
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            // sanitize code
+            var code = codeDto.Code.Replace(" ", string.Empty)
+                               .Replace("-", string.Empty);
+
+            var valid = await _userManager.VerifyTwoFactorTokenAsync(
+                            user,
+                            _userManager.Options.Tokens.AuthenticatorTokenProvider,
+                            code);
+            if (!valid)
+                return BadRequest(new { message = "Invalid authenticator code." });
+
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            user.TwoFactorSetupComplete = true;
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { message = "2FA enabled." });
+        }
+        [HttpPost("login/2fa")]
+        public async Task<IActionResult> Login2Fa([FromBody] Login2FaDto dto)
+        {
+            // 1) Lookup user by the ID passed from the client
+            var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
+            if (user == null)
+                return Unauthorized(new { message = "Invalid 2FA attempt." });
+
+            // 2) Sanitize & verify the TOTP code
+            var code = dto.Code.Replace(" ", string.Empty)
+                               .Replace("-", string.Empty);
+
+            var valid = await _userManager.VerifyTwoFactorTokenAsync(
+                user,
+                _userManager.Options.Tokens.AuthenticatorTokenProvider,
+                code);
+
+            if (!valid)
+                return Unauthorized(new { message = "Invalid 2FA code." });
+
+            // 3) Code is valid → issue your JWT + refresh token just like a normal login
+            var accessToken = await GenerateJwtTokenAsync(user);
+            var refreshToken = new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                Token = GenerateSecureToken(),
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            await _userRepository.AddRefreshTokenAsync(refreshToken);
+
+            Response.Cookies.Append("jwt", accessToken, AccessCookieOpts());
+            Response.Cookies.Append("refresh", refreshToken.Token, RefreshCookieOpts(refreshToken.Expires));
+
+            return Ok(new { message = "Login successful" });
+        }
+
 
         #region  Helper Methods
 
@@ -339,25 +449,55 @@ namespace ProgressTracker.Controllers
         }
 
         #endregion
-        private string GenerateSecureToken() 
+        // this method generates 64 cryptographically secure random mbytes
+        private string GenerateSecureToken()  
         {
             var bytes = RandomNumberGenerator.GetBytes(64);
             return Convert.ToBase64String(bytes);
         }
+
+        // Returns a CookieOptions object for the refresh token cookie with:
         private CookieOptions RefreshCookieOpts(DateTime until) => new()
         {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Expires = until
+            HttpOnly = true,                // not accessible via JavaScript (prevents XSS)
+            Secure = true,                  // only sent over HTTPS
+            SameSite = SameSiteMode.None,   // allows cross-site usage (e.g., frontend on a different domain)
+            Expires = until,                // sets expiration based on the argument passed
+            Path = "/"                      // make it valid for every endpoint
         };
+
+        // Returns the same kind of cookie options, but specifically for access tokens, which expire in 1 hour.
         private CookieOptions AccessCookieOpts() => new()
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
-            Expires = DateTime.UtcNow.AddHours(1)
+            Expires = DateTime.UtcNow.AddHours(1),
+            Path = "/"
         };
+        // 
+        private string GenerateQrCodeUri(string email, string unformattedKey)
+        {
+            // otpauth://totp/{Issuer}:{email}?secret={key}&issuer={Issuer}&digits=6
+            var issuer = _urlEncoder.Encode("ProgressTracker");
+            var user = _urlEncoder.Encode(email);
+            return $"otpauth://totp/{issuer}:{user}" + $"?secret={unformattedKey}&issuer={issuer}&digits=6";
+        }
+
+        private async Task<string> ResetAndGetAuthenticatorKeyAsync(ApplicationUser user)
+        {
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+            return await _userManager.GetAuthenticatorKeyAsync(user);
+        }
+
+        private string FormatKey(string unformattedKey)
+        {
+            // split into groups of 4, uppercase
+            return string.Join(" ", Enumerable
+                .Range(0, unformattedKey.Length / 4)
+                .Select(i => unformattedKey.Substring(i * 4, 4)))
+                .ToLowerInvariant();
+        }
     }
 
 }
